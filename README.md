@@ -31,8 +31,7 @@ function using Gmail SMTP. The visitor can also choose to open WhatsApp.
 
 The email endpoint is public, so an internet user can submit numbers to it.
 Configure suitable Vercel WAF rate limiting or other abuse protection before
-sharing the site widely. The number is also saved in the visitor's browser
-after a successful submission. Opening `index.html` directly does not run
-the serverless endpoint.
+sharing the site widely. Opening `index.html` directly does not run the
+serverless endpoint.
 
 Run `npm install` and `npm test` to run the automated tests.

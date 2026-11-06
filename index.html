@@ -685,7 +685,7 @@
             autocomplete="tel"
             aria-describedby="hint error" />
         </div>
-        <p class="hint" id="hint">Include your country code — e.g. <strong>27&nbsp;82&nbsp;123&nbsp;4567</strong>. Sending emails your number to me and saves it on this device.</p>
+        <p class="hint" id="hint">Include your country code — e.g. <strong>27&nbsp;82&nbsp;123&nbsp;4567</strong>. Sending emails your number to me.</p>
         <p class="error" id="error" role="alert" hidden></p>
       </div>
 
@@ -1057,26 +1057,6 @@ if (/^[1-9]\d{6,14}$/.test(whatsappNumber) && whatsappNumber !== "27123456789"){
   waUnavailable.hidden = false;
 }
 
-/* restore a previously typed number (nice on refresh) */
-try {
-  const saved = localStorage.getItem("wa_number_tisetso");
-  if (saved) phoneIn.value = saved;
-  else {
-    /* prefill with detected country code as a hint */
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-    const ccByTz = {
-      "Africa/Johannesburg":"27 ", "Africa/Cairo":"20 ", "Africa/Lagos":"234 ",
-      "Africa/Nairobi":"254 ", "Africa/Accra":"233 ", "Africa/Casablanca":"212 ",
-      "Europe/London":"44 ", "Europe/Paris":"33 ", "Europe/Berlin":"49 ",
-      "America/New_York":"1 ",  "America/Los_Angeles":"1 ", "Asia/Kolkata":"91 ",
-      "Asia/Tokyo":"81 ", "Asia/Shanghai":"86 ", "Australia/Sydney":"61 "
-    };
-    if (ccByTz[tz]) phoneIn.value = ccByTz[tz];
-  }
-  // initial flag
-  flagEl.textContent = detectFlag(digitsOnly(phoneIn.value));
-} catch(e){}
-
 /* live-clean the input as she types; auto-format on blur & after pauses */
 let fmtTimer = null;
 let lastDigitsForFlag = "";
@@ -1162,8 +1142,6 @@ form.addEventListener("submit", async (e) => {
     btn.textContent = "Send it my way 💗";
     phoneIn.readOnly = false;
   }
-
-  try { localStorage.setItem("wa_number_tisetso", phoneIn.value); } catch(e){}
 
   /* --- swap views --- */
   savedNum.textContent = pretty;

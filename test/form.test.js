@@ -3,7 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
 
-function setup(fetch, whatsappNumber = "27821234567") {
+function setup(fetch, whatsappNumber = "27821234567", saved = {}) {
   const html = fs.readFileSync("index.html", "utf8");
   const start = html.indexOf("/* ---------- form ---------- */", html.indexOf("<script>"));
   const end = html.indexOf("/* gentle nudge for the developer */", start);
@@ -26,7 +26,6 @@ function setup(fetch, whatsappNumber = "27821234567") {
   elements.waLink.hidden = true;
   elements.directWaLink.hidden = true;
   elements.waUnavailable.hidden = true;
-  const saved = {};
   const context = {
     $: (selector) => elements[selector.slice(1)],
     digitsOnly: (value) => (value || "").replace(/\D/g, ""),
@@ -39,6 +38,11 @@ function setup(fetch, whatsappNumber = "27821234567") {
   vm.runInNewContext(html.slice(start, end), context);
   return { elements, button, saved };
 }
+
+test("phone field starts empty even when a previous number was saved", () => {
+  const app = setup(() => {}, "27821234567", { wa_number_tisetso: "27829999999" });
+  assert.equal(app.elements.phone.value, "");
+});
 
 test("WhatsApp links open a blank chat without submitting the form", () => {
   let calls = 0;
@@ -78,6 +82,7 @@ test("successful submission sends digits before showing success", async () => {
   assert.equal(app.elements.form.hidden, true);
   assert.equal(app.elements.savedNumber.textContent, "+27821234567");
   assert.equal(app.button.disabled, false);
+  assert.equal(Object.keys(app.saved).length, 0);
 });
 
 test("invalid or failed submissions keep the form visible and display an error", async () => {
