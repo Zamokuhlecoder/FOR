@@ -1,0 +1,14 @@
+{
+  "name": "whatsapp-number-form",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "nodemailer": "^10.3.1"
+  }
+}

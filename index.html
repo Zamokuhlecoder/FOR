@@ -4,12 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>For Tisetso 💖</title>
+<meta name="description" content="A little love-note, made by hand." />
+<meta name="theme-color" content="#ff2d78" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
-     BRIGHT LOVE PALETTE
+     BRIGHT LOVE PALETTE  ·  enhanced edition
      ============================================================ */
   :root{
     --hot:#ff2d78;
@@ -25,6 +27,12 @@
     --line:#ffd9e8;
 
     --glow: 0 24px 60px -18px rgba(255,45,120,.55);
+
+    /* tilt vars (set by JS) */
+    --rx:0deg;
+    --ry:0deg;
+    --px:0px;
+    --py:0px;
   }
 
   *{ box-sizing:border-box; }
@@ -42,6 +50,7 @@
     overflow-x:hidden;
     position:relative;
     background:#fff4fa;
+    perspective:1800px;
   }
 
   /* ---------- bright animated backdrop ---------- */
@@ -57,6 +66,8 @@
       radial-gradient(48% 44% at 20% 88%, #f0d4ff 0%, transparent 60%),
       linear-gradient(150deg, #fff5fa 0%, #fff0f6 40%, #fff6ec 70%, #fdf1ff 100%);
     animation:drift 22s ease-in-out infinite alternate;
+    transform:translate3d(var(--px), var(--py), 0);
+    transition:transform .4s ease-out;
   }
   body::after{
     content:"";
@@ -69,6 +80,8 @@
       radial-gradient(26% 24% at 30% 70%, rgba(214,31,214,.14), transparent 70%);
     filter:blur(30px);
     animation:swirl 28s linear infinite;
+    transform:translate3d(calc(var(--px) * -1.6), calc(var(--py) * -1.6), 0);
+    transition:transform .4s ease-out;
     pointer-events:none;
   }
   @keyframes drift{
@@ -78,6 +91,13 @@
   @keyframes swirl{
     from{ transform:rotate(0deg) scale(1); }
     to  { transform:rotate(360deg) scale(1.05); }
+  }
+
+  /* subtle film grain for depth */
+  .grain{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    opacity:.045; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 
   /* ---------- floating hearts layer ---------- */
@@ -98,6 +118,25 @@
     100% { transform:translate3d(30px,-118vh,0) rotate(32deg) scale(1.1); opacity:0; }
   }
 
+  /* ---------- halo behind card ---------- */
+  .halo{
+    position:fixed;
+    left:50%; top:50%;
+    width:min(680px, 92vw);
+    height:min(680px, 92vw);
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,45,120,.28) 0%, rgba(255,159,28,.16) 38%, transparent 68%);
+    filter:blur(40px);
+    z-index:0;
+    pointer-events:none;
+    animation:haloPulse 6s ease-in-out infinite;
+  }
+  @keyframes haloPulse{
+    0%,100%{ transform:translate(-50%,-50%) scale(.92); opacity:.85; }
+    50%    { transform:translate(-50%,-50%) scale(1.08); opacity:1; }
+  }
+
   /* ---------- card ---------- */
   @property --angle{
     syntax:'<angle>';
@@ -105,11 +144,18 @@
     inherits:false;
   }
 
-  .card{
+  .card-wrap{
     position:relative;
     z-index:2;
     width:100%;
     max-width:560px;
+    transform-style:preserve-3d;
+    transform:rotateX(var(--rx)) rotateY(var(--ry));
+    transition:transform .25s ease-out;
+  }
+
+  .card{
+    position:relative;
     padding:42px 32px 30px;
     border-radius:34px;
     border:3px solid transparent;
@@ -124,12 +170,19 @@
     backdrop-filter:blur(18px) saturate(150%);
     -webkit-backdrop-filter:blur(18px) saturate(150%);
     animation:cardIn 1s cubic-bezier(.18,.85,.28,1) both, spin 7s linear infinite;
+    transform-style:preserve-3d;
   }
   @keyframes spin{ to{ --angle:360deg; } }
   @keyframes cardIn{
     from{ opacity:0; transform:translateY(34px) scale(.95); }
     to  { opacity:1; transform:none; }
   }
+
+  /* layered depth inside card (responds to tilt) */
+  .envelope, h1, .message, .form, .success, .footnote{
+    transform:translateZ(28px);
+  }
+  .badge{ transform:translateZ(46px); }
 
   /* ---------- little badge ---------- */
   .badge{
@@ -161,10 +214,50 @@
     margin-bottom:8px;
     animation:bob 3.6s ease-in-out infinite;
     filter:drop-shadow(0 12px 20px rgba(255,45,120,.4));
+    cursor:pointer;
+    transition:transform .2s;
   }
+  .envelope:hover{ transform:scale(1.12) rotate(-6deg); }
+  .envelope:active{ transform:scale(.94); }
   @keyframes bob{
     0%,100%{ transform:translateY(0) rotate(-4deg) scale(1); }
     50%    { transform:translateY(-10px) rotate(4deg) scale(1.05); }
+  }
+
+  /* secret whisper that appears when envelope is clicked */
+  .whisper{
+    position:absolute;
+    top:8px; right:14px;
+    max-width:60%;
+    padding:10px 14px;
+    background:#fff;
+    border:2px dashed var(--rose);
+    border-radius:14px;
+    font-size:12px;
+    line-height:1.5;
+    color:var(--hot);
+    font-weight:600;
+    font-style:italic;
+    box-shadow:0 14px 30px -16px rgba(255,45,120,.6);
+    opacity:0;
+    transform:translateY(-6px) scale(.9);
+    pointer-events:none;
+    transition:opacity .4s, transform .4s;
+    z-index:5;
+  }
+  .whisper.show{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+  .whisper::after{
+    content:"";
+    position:absolute;
+    right:24px; bottom:-9px;
+    width:14px; height:14px;
+    background:#fff;
+    border-right:2px dashed var(--rose);
+    border-bottom:2px dashed var(--rose);
+    transform:rotate(45deg);
   }
 
   h1{
@@ -172,7 +265,7 @@
     font-size:clamp(30px, 7.4vw, 42px);
     line-height:1.15;
     text-align:center;
-    margin:6px 0 20px;
+    margin:6px 0 8px;
     letter-spacing:-.6px;
     color:var(--ink);
   }
@@ -187,6 +280,34 @@
     animation:shimmer 6s linear infinite;
   }
 
+  /* ---------- day counter ---------- */
+  .counter{
+    text-align:center;
+    margin:0 0 18px;
+    font-size:12.5px;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    font-weight:700;
+    color:#b57aa2;
+  }
+  .counter b{
+    font-family:'Playfair Display', Georgia, serif;
+    font-style:italic;
+    font-size:18px;
+    color:var(--hot);
+    margin:0 4px;
+  }
+  .counter .arrow{
+    display:inline-block;
+    margin:0 6px;
+    color:var(--tangerine);
+    animation:arrowPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes arrowPulse{
+    0%,100%{ transform:translateX(0); opacity:.6; }
+    50%    { transform:translateX(4px); opacity:1; }
+  }
+
   /* ---------- message ---------- */
   .message{
     font-size:15.5px;
@@ -194,6 +315,7 @@
     color:var(--ink-soft);
     text-align:center;
     margin:0 0 24px;
+    min-height:120px;
   }
   .message p{ margin:0 0 13px; }
   .message p:last-child{ margin-bottom:0; }
@@ -205,6 +327,17 @@
     padding:0 2px;
     border-radius:3px;
   }
+  /* typewriter caret */
+  .caret{
+    display:inline-block;
+    width:2px;
+    height:1.05em;
+    background:var(--hot);
+    vertical-align:-2px;
+    margin-left:1px;
+    animation:blink 1s steps(2) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
 
   /* ---------- form ---------- */
   .form{ display:grid; gap:16px; }
@@ -234,6 +367,7 @@
     transform:translateY(-2px);
   }
   .input-row.shake{ animation:shake .42s cubic-bezier(.36,.07,.19,.97); }
+  .input-row.ok{ border-color:#7be3a8; box-shadow:0 0 0 5px rgba(123,227,168,.22); }
   @keyframes shake{
     10%,90%{ transform:translateX(-2px); }
     20%,80%{ transform:translateX(4px); }
@@ -247,6 +381,19 @@
     color:var(--hot);
     margin-right:8px;
     user-select:none;
+  }
+
+  .flag{
+    margin-right:10px;
+    font-size:20px;
+    line-height:1;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.12));
+    transition:transform .25s;
+  }
+  .flag.bump{ animation:bump .4s ease; }
+  @keyframes bump{
+    0%,100%{ transform:scale(1); }
+    50%    { transform:scale(1.25) rotate(-8deg); }
   }
 
   input{
@@ -309,6 +456,7 @@
     box-shadow:0 24px 44px -14px rgba(214,31,214,.75), 0 12px 24px -12px rgba(255,45,120,.9);
   }
   .btn-primary:active{ transform:translateY(0) scale(.985); }
+  .btn-primary:disabled{ cursor:wait; opacity:.7; transform:none; }
   .btn-primary::after{
     content:"";
     position:absolute;
@@ -322,6 +470,24 @@
     0%,60%{ left:-60%; }
     85%,100%{ left:130%; }
   }
+
+  /* sound toggle */
+  .sound-toggle{
+    position:absolute;
+    top:18px; right:18px;
+    width:38px; height:38px;
+    border-radius:50%;
+    background:rgba(255,255,255,.85);
+    border:2px solid var(--line);
+    display:grid;
+    place-items:center;
+    font-size:16px;
+    color:var(--hot);
+    z-index:6;
+    transition:transform .2s, border-color .2s;
+  }
+  .sound-toggle:hover{ transform:scale(1.08); border-color:var(--rose); }
+  .sound-toggle[aria-pressed="true"]{ background:#fff0f6; }
 
   .footnote{
     margin:22px 0 0;
@@ -370,6 +536,12 @@
     letter-spacing:1px;
     color:var(--ink);
     box-shadow:0 12px 26px -18px rgba(255,45,120,.9);
+    animation:chipPop .6s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  @keyframes chipPop{
+    0%  { transform:scale(.4) rotate(-12deg); opacity:0; }
+    60% { transform:scale(1.08) rotate(2deg); opacity:1; }
+    100%{ transform:scale(1) rotate(0); }
   }
 
   .btn-ghost{
@@ -394,6 +566,7 @@
     color:#b389a9;
     text-decoration:underline;
     text-underline-offset:4px;
+    cursor:pointer;
   }
   .small-link:hover{ color:var(--hot); }
 
@@ -434,10 +607,27 @@
     to  { transform:scale(.1) translateY(-16px); opacity:0; }
   }
 
+  /* ---------- footer signature ---------- */
+  .signature{
+    position:fixed;
+    bottom:14px; left:50%;
+    transform:translateX(-50%);
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:#c89bb3;
+    z-index:1;
+    opacity:.7;
+  }
+  .signature .dot{ color:var(--hot); }
+
   @media (max-width:440px){
     .card{ padding:32px 20px 26px; border-radius:26px; }
-    .message{ font-size:15px; }
+    .message{ font-size:15px; min-height:110px; }
     .envelope{ font-size:44px; }
+    .sound-toggle{ top:12px; right:12px; width:34px; height:34px; font-size:14px; }
+    .whisper{ max-width:70%; font-size:11px; }
+    .signature{ display:none; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -447,65 +637,80 @@
       transition-duration:.001ms !important;
     }
     #hearts,#confetti{ display:none; }
+    .card-wrap{ transform:none !important; }
   }
 </style>
 </head>
 <body>
 
+<div class="halo" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 <div id="hearts" aria-hidden="true"></div>
 <div id="confetti" aria-hidden="true"></div>
 
-<main class="card">
-  <span class="badge">one day · one great conversation</span>
-  <span class="envelope" aria-hidden="true">💌</span>
+<main class="card-wrap" id="cardWrap">
+  <div class="card">
+    <button class="sound-toggle" id="soundToggle" aria-pressed="false" aria-label="Toggle gentle chime on success" title="Toggle chime">
+      <span id="soundIcon">🔔</span>
+    </button>
 
-  <h1>Hey <span class="name">Tisetso</span> 💖</h1>
+    <span class="whisper" id="whisper">psst… you made that one day feel like a year of luck 💌</span>
 
-  <div class="message">
-    <p>I know we only got to work together for <span class="hl">one single day</span> — but honestly, that one day was the best part of my week. 😊</p>
-    <p>You gave me your <strong>email</strong>, and I promise I'll use it. But WhatsApp just feels more like us — quick, easy, and full of voice notes.</p>
-    <p>If you'd like to keep talking, drop your number below. <strong>No pressure at all</strong> — and if you'd rather not, we're still completely good. 💛</p>
-  </div>
+    <span class="badge">one day · one great conversation</span>
+    <span class="envelope" id="envelope" aria-hidden="true" role="button" tabindex="0" title="click me">💌</span>
 
-  <!-- ================= FORM ================= -->
-  <form class="form" id="form" novalidate>
-    <div class="field">
-      <label for="phone">Your WhatsApp number</label>
-      <div class="input-row" id="inputRow">
-        <span class="prefix" aria-hidden="true">+</span>
-        <input
-          id="phone"
-          name="phone"
-          type="tel"
-          inputmode="tel"
-          placeholder="27 82 123 4567"
-          autocomplete="tel"
-          aria-describedby="hint error" />
-      </div>
-      <p class="hint" id="hint">Include your country code — e.g. <strong>27&nbsp;82&nbsp;123&nbsp;4567</strong></p>
-      <p class="error" id="error" role="alert" hidden></p>
+    <h1>Hey <span class="name">Tisetso</span> 💖</h1>
+
+    <div class="counter" aria-label="days together">
+      <b id="dayCount">1</b> day together
+      <span class="arrow">→</span>
+      <b>∞</b> more to go
     </div>
 
-    <button type="submit" class="btn-primary">Send it my way 💗</button>
-  </form>
+    <div class="message" id="message" aria-live="polite"></div>
 
-  <!-- ================= SUCCESS ================= -->
-  <div class="success" id="success" hidden>
-    <p class="big">Got it, <span>Tisetso</span> 🥳</p>
-    <div class="chip"><span aria-hidden="true">📱</span><span id="savedNumber">+—</span></div>
-    <p class="message" style="margin:0">
-      One last tap and it lands in my pocket. This opens WhatsApp with a message already written — change anything you like before sending.
+    <!-- ================= FORM ================= -->
+    <form class="form" id="form" novalidate>
+      <div class="field">
+        <label for="phone">Your WhatsApp number</label>
+        <div class="input-row" id="inputRow">
+          <span class="prefix" aria-hidden="true">+</span>
+          <span class="flag" id="flag" aria-hidden="true">🌍</span>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputmode="tel"
+            placeholder="27 82 123 4567"
+            autocomplete="tel"
+            aria-describedby="hint error" />
+        </div>
+        <p class="hint" id="hint">Include your country code — e.g. <strong>27&nbsp;82&nbsp;123&nbsp;4567</strong>. Sending emails your number to me and saves it on this device.</p>
+        <p class="error" id="error" role="alert" hidden></p>
+      </div>
+
+      <button type="submit" class="btn-primary">Send it my way 💗</button>
+    </form>
+
+    <!-- ================= SUCCESS ================= -->
+    <div class="success" id="success" hidden>
+      <p class="big">Got it, <span>Tisetso</span> 🥳</p>
+      <div class="chip"><span aria-hidden="true">📱</span><span id="savedNumber">+—</span></div>
+      <p class="message" style="margin:0;min-height:auto">
+        Your number was sent by email. You can also open WhatsApp with a message already written — change anything you like before sending.
+      </p>
+      <a class="btn-primary" id="waLink" href="#" target="_blank" rel="noopener">Open WhatsApp &amp; say hi 💬</a>
+      <a class="small-link" href="#" id="editLink">← change my number</a>
+    </div>
+
+    <p class="footnote">
+      Made by hand, just for you.
+      <span class="ps">P.S. Fair warning — I send way too many memes. 😄</span>
     </p>
-    <a class="btn-primary" id="waLink" href="#" target="_blank" rel="noopener">Open WhatsApp &amp; say hi 💬</a>
-    <a class="btn-ghost" id="mailLink" href="#">or send it by email instead</a>
-    <a class="small-link" href="#" id="editLink">← change my number</a>
   </div>
-
-  <p class="footnote">
-    Made by hand, just for you. Nothing here is stored or shared with anyone else.
-    <span class="ps">P.S. Fair warning — I send way too many memes. 😄</span>
-  </p>
 </main>
+
+<div class="signature">made with <span class="dot">♥</span> just for you</div>
 
 <script>
 /* ============================================================
@@ -514,8 +719,7 @@
 const CONFIG = {
   herName: "Tisetso",              // her name (already set 💖)
   hisName: "Alex",                 // 👈 YOUR first name
-  whatsappNumber: "27123456789",   // 👈 YOUR number: country code + number, DIGITS ONLY
-  email: "you@example.com"         // 👈 YOUR email (fallback option)
+  whatsappNumber: "27123456789"    // 👈 YOUR number: country code + number, DIGITS ONLY
 };
 /* ============================================================ */
 
@@ -541,49 +745,292 @@ const digitsOnly = (v) => (v || "").replace(/\D/g, "");
   }
 })();
 
-/* ---------- sparkle trail (desktop only) ---------- */
+/* ---------- typewriter message ---------- */
+/* Build the full markup first, then progressively reveal text characters
+   across all text nodes in document order. The caret follows the typing. */
+(function typewriter(){
+  const el = $("#message");
+  el.innerHTML =
+    '<p>I know we only got to work together for <span class="hl">one single day</span> — but honestly, that one day was the best part of my week. 😊</p>' +
+    '<p>You gave me your <strong>email</strong>, and I promise I\'ll use it. But WhatsApp just feels more like us — quick, easy, and full of voice notes.</p>' +
+    '<p>If you\'d like to keep talking, drop your number below. <strong>No pressure at all</strong> — and if you\'d rather not, we\'re still completely good. 💛</p>';
+
+  /* collect non-whitespace text nodes in document order */
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+  const textNodes = [];
+  let n;
+  while ((n = walker.nextNode())){
+    if (n.nodeValue && n.nodeValue.trim()){
+      textNodes.push({ node: n, original: n.nodeValue });
+    }
+  }
+  /* stash originals, then blank them out */
+  textNodes.forEach(t => { t.node.nodeValue = ""; });
+
+  const caret = document.createElement("span");
+  caret.className = "caret";
+
+  let ti = 0, ci = 0;
+  function step(){
+    if (ti >= textNodes.length){
+      caret.remove();
+      return;
+    }
+    const t = textNodes[ti];
+    /* keep the caret right after the currently-typing text node */
+    if (caret.parentNode !== t.node.parentNode || caret.previousSibling !== t.node){
+      if (caret.parentNode) caret.parentNode.removeChild(caret);
+      t.node.parentNode.insertBefore(caret, t.node.nextSibling);
+    }
+    if (ci >= t.original.length){
+      ti++; ci = 0;
+      return setTimeout(step, 70); /* brief pause between text nodes */
+    }
+    t.node.nodeValue = t.original.slice(0, ci + 1);
+    ci++;
+    setTimeout(step, 14 + Math.random() * 18);
+  }
+  setTimeout(step, 600);
+})();
+
+/* ---------- sparkle trail (desktop + touch) ---------- */
 (function sparkles(){
-  if (!window.matchMedia("(pointer: fine)").matches) return;
   let last = 0;
-  window.addEventListener("pointermove", (e) => {
+  function spawn(x, y){
     const now = Date.now();
     if (now - last < 70) return;
     last = now;
-
     const s = document.createElement("span");
     s.className = "spark";
-    s.style.left = (e.clientX - 4) + "px";
-    s.style.top  = (e.clientY - 4) + "px";
+    s.style.left = (x - 4) + "px";
+    s.style.top  = (y - 4) + "px";
     s.style.opacity = .8;
     document.body.appendChild(s);
     setTimeout(() => s.remove(), 900);
-  }, { passive: true });
+  }
+  if (window.matchMedia("(pointer: fine)").matches){
+    window.addEventListener("pointermove", (e) => spawn(e.clientX, e.clientY), { passive: true });
+  } else {
+    window.addEventListener("touchmove", (e) => {
+      const t = e.touches[0]; if (t) spawn(t.clientX, t.clientY);
+    }, { passive: true });
+  }
 })();
 
-/* ---------- confetti burst ---------- */
-function burstHearts(){
+/* ---------- 3D card tilt + parallax backdrop (desktop only) ---------- */
+(function tilt(){
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  const wrap = $("#cardWrap");
+  const root = document.documentElement;
+  let raf = null;
+
+  function onMove(e){
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+      root.style.setProperty("--ry", (dx * 6).toFixed(2) + "deg");
+      root.style.setProperty("--rx", (-dy * 6).toFixed(2) + "deg");
+      root.style.setProperty("--px", (dx * -14).toFixed(1) + "px");
+      root.style.setProperty("--py", (dy * -14).toFixed(1) + "px");
+    });
+  }
+  window.addEventListener("pointermove", onMove, { passive:true });
+  window.addEventListener("pointerleave", () => {
+    root.style.setProperty("--rx","0deg");
+    root.style.setProperty("--ry","0deg");
+    root.style.setProperty("--px","0px");
+    root.style.setProperty("--py","0px");
+  });
+})();
+
+/* ---------- envelope secret ---------- */
+(function envelopeSecret(){
+  const env = $("#envelope");
+  const whisper = $("#whisper");
+  const messages = [
+    "psst… you made that one day feel like a year of luck 💌",
+    "secret: I kept smiling about you all week 🌸",
+    "tiny truth: I hoped you'd say yes the whole time 💗",
+    "shh… voice notes from you would make my whole day 🎧",
+    "whisper: you've been on my mind since that day ✨"
+  ];
+  let i = 0;
+  function show(){
+    whisper.textContent = messages[i % messages.length];
+    i++;
+    whisper.classList.add("show");
+    clearTimeout(whisper._t);
+    whisper._t = setTimeout(() => whisper.classList.remove("show"), 3200);
+  }
+  env.addEventListener("click", show);
+  env.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); show(); }
+  });
+})();
+
+/* ---------- phone auto-format + country flag ---------- */
+const COUNTRY_MAP = {
+  "27":"🇿🇦", "1":"🇺🇸", "44":"🇬🇧", "91":"🇮🇳", "234":"🇳🇬", "254":"🇰🇪",
+  "233":"🇬🇭", "20":"🇪🇬", "212":"🇲🇦", "33":"🇫🇷", "49":"🇩🇪",
+  "34":"🇪🇸", "39":"🇮🇹", "31":"🇳🇱", "61":"🇦🇺", "64":"🇳🇿", "55":"🇧🇷",
+  "52":"🇲🇽", "54":"🇦🇷", "56":"🇨🇱", "57":"🇨🇴", "51":"🇵🇪", "58":"🇻🇪",
+  "82":"🇰🇷", "81":"🇯🇵", "86":"🇨🇳", "62":"🇮🇩", "60":"🇲🇾", "65":"🇸🇬",
+  "66":"🇹🇭", "84":"🇻🇳", "63":"🇵🇭", "92":"🇵🇰", "880":"🇧🇩", "94":"🇱🇰",
+  "971":"🇦🇪", "966":"🇸🇦", "972":"🇮🇱", "90":"🇹🇷", "98":"🇮🇷", "7":"🇷🇺",
+  "48":"🇵🇱", "30":"🇬🇷", "46":"🇸🇪", "47":"🇳🇴", "45":"🇩🇰", "358":"🇫🇮",
+  "351":"🇵🇹", "353":"🇮🇪", "32":"🇧🇪", "41":"🇨🇭", "43":"🇦🇹", "36":"🇭🇺",
+  "420":"🇨🇿", "380":"🇺🇦", "40":"🇷🇴", "359":"🇧🇬", "385":"🇭🇷", "386":"🇸🇮"
+};
+
+function detectFlag(digits){
+  if (!digits) return "🌍";
+  for (const cc of ["234","254","233","212","880","971","966","972","358","351","353","359","385","386","420","380"]){
+    if (digits.startsWith(cc)) return COUNTRY_MAP[cc];
+  }
+  for (const cc of ["27","44","91","33","49","34","39","31","61","64","55","52","54","56","57","51","58","82","81","86","62","60","65","66","84","63","92","94","90","98","48","30","46","47","45","41","43","36","40","20"]){
+    if (digits.startsWith(cc)) return COUNTRY_MAP[cc];
+  }
+  if (digits.startsWith("1")) return COUNTRY_MAP["1"];
+  if (digits.startsWith("7")) return COUNTRY_MAP["7"];
+  return "🌍";
+}
+
+function bumpFlag(){
+  const f = $("#flag");
+  f.classList.remove("bump");
+  void f.offsetWidth;
+  f.classList.add("bump");
+}
+
+/* group digits for readability — adaptive by length */
+function formatPhone(digits){
+  if (!digits) return "";
+  // ZA default grouping: 27 82 123 4567
+  if (digits.startsWith("27") && digits.length >= 11){
+    const rest = digits.slice(2);
+    return "27 " + rest.slice(0,2) + " " + rest.slice(2,5) + " " + rest.slice(5,9);
+  }
+  if (digits.startsWith("1") && digits.length === 11){
+    return digits.slice(0,1) + " " + digits.slice(1,4) + " " + digits.slice(4,7) + " " + digits.slice(7,11);
+  }
+  if (digits.startsWith("44") && digits.length >= 12){
+    const rest = digits.slice(2);
+    return "44 " + rest.slice(0,4) + " " + rest.slice(4,10);
+  }
+  // generic: groups of 3 from the front, leaving the last 4 together
+  if (digits.length <= 4) return digits;
+  if (digits.length <= 7) return digits.slice(0,3) + " " + digits.slice(3);
+  // country code (1–3 digits) + groups
+  const cc = digits.length >= 13 ? 3 : (digits.length >= 11 ? 2 : 1);
+  let out = digits.slice(0, cc);
+  let rest = digits.slice(cc);
+  while (rest.length > 4){
+    out += " " + rest.slice(0,3);
+    rest = rest.slice(3);
+  }
+  if (rest) out += " " + rest;
+  return out;
+}
+
+/* ---------- confetti burst (mixed shapes) ---------- */
+function burstHearts(originX, originY){
   const wrap = $("#confetti");
-  const glyphs = ["💖","💕","✨","💛","🌸","💗","⭐","🎉","💞"];
-  const n = 42;
+  const glyphs = ["💖","💕","✨","💛","🌸","💗","⭐","🎉","💞","💫","🩷"];
+  const n = 56;
+
+  const ox = originX != null ? originX : window.innerWidth / 2;
+  const oy = originY != null ? originY : window.innerHeight * 0.46;
 
   for (let i = 0; i < n; i++){
     const el = document.createElement("span");
     el.className = "confetti-piece";
     el.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+    el.style.left = ox + "px";
+    el.style.top  = oy + "px";
+    el.style.transform = "translate(-50%, -50%)";
 
     const angle = (Math.PI * 2 * i) / n + Math.random() * 0.5;
-    const dist  = 140 + Math.random() * 260;
+    const dist  = 120 + Math.random() * 300;
 
     el.style.setProperty("--dx", Math.cos(angle) * dist + "px");
     el.style.setProperty("--dy", Math.sin(angle) * dist + "px");
     el.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
-    el.style.fontSize = 16 + Math.random() * 20 + "px";
+    el.style.fontSize = 14 + Math.random() * 22 + "px";
     el.style.animationDelay = Math.random() * 0.12 + "s";
 
     wrap.appendChild(el);
     setTimeout(() => el.remove(), 1500);
   }
 }
+
+/* ---------- gentle chime via Web Audio (off by default) ---------- */
+const Sound = (function(){
+  let ctx = null;
+  let enabled = false;
+  function ensure(){
+    if (!ctx){
+      try { ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch(e){ ctx = null; }
+    }
+    return ctx;
+  }
+  function tone(freq, start, dur, gain){
+    const c = ensure(); if (!c) return;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    o.connect(g); g.connect(c.destination);
+    const t0 = c.currentTime + start;
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(gain, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.start(t0);
+    o.stop(t0 + dur + 0.05);
+  }
+  return {
+    toggle(on){
+      enabled = on;
+      if (on) ensure();
+    },
+    isOn(){ return enabled; },
+    chime(){
+      if (!enabled) return;
+      // soft major arpeggio: C5, E5, G5, C6
+      tone(523.25, 0.00, 0.6, 0.18);
+      tone(659.25, 0.10, 0.6, 0.16);
+      tone(783.99, 0.20, 0.7, 0.16);
+      tone(1046.5, 0.32, 0.9, 0.14);
+    },
+    click(){
+      if (!enabled) return;
+      tone(880, 0, 0.15, 0.08);
+    }
+  };
+})();
+
+/* ---------- sound toggle button ---------- */
+(function soundToggle(){
+  const btn = $("#soundToggle");
+  const icon = $("#soundIcon");
+  try {
+    const saved = localStorage.getItem("wa_sound_tisetso");
+    if (saved === "1"){ btn.setAttribute("aria-pressed","true"); icon.textContent = "🔔"; Sound.toggle(true); }
+    else { icon.textContent = "🔕"; }
+  } catch(e){}
+  btn.addEventListener("click", () => {
+    const on = btn.getAttribute("aria-pressed") !== "true";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    icon.textContent = on ? "🔔" : "🔕";
+    Sound.toggle(on);
+    try { localStorage.setItem("wa_sound_tisetso", on ? "1" : "0"); } catch(e){}
+    if (on) Sound.click();
+  });
+})();
 
 /* ---------- form ---------- */
 const form      = $("#form");
@@ -592,24 +1039,74 @@ const inputRow  = $("#inputRow");
 const errorEl   = $("#error");
 const successEl = $("#success");
 const waLink    = $("#waLink");
-const mailLink  = $("#mailLink");
 const savedNum  = $("#savedNumber");
+const flagEl    = $("#flag");
 
 /* restore a previously typed number (nice on refresh) */
 try {
   const saved = localStorage.getItem("wa_number_tisetso");
   if (saved) phoneIn.value = saved;
+  else {
+    /* prefill with detected country code as a hint */
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const ccByTz = {
+      "Africa/Johannesburg":"27 ", "Africa/Cairo":"20 ", "Africa/Lagos":"234 ",
+      "Africa/Nairobi":"254 ", "Africa/Accra":"233 ", "Africa/Casablanca":"212 ",
+      "Europe/London":"44 ", "Europe/Paris":"33 ", "Europe/Berlin":"49 ",
+      "America/New_York":"1 ",  "America/Los_Angeles":"1 ", "Asia/Kolkata":"91 ",
+      "Asia/Tokyo":"81 ", "Asia/Shanghai":"86 ", "Australia/Sydney":"61 "
+    };
+    if (ccByTz[tz]) phoneIn.value = ccByTz[tz];
+  }
+  // initial flag
+  flagEl.textContent = detectFlag(digitsOnly(phoneIn.value));
 } catch(e){}
 
-/* live-clean the input as she types */
+/* live-clean the input as she types; auto-format on blur & after pauses */
+let fmtTimer = null;
+let lastDigitsForFlag = "";
 phoneIn.addEventListener("input", () => {
   const clean = phoneIn.value.replace(/[^\d\s\-()]/g, "");
   if (clean !== phoneIn.value) phoneIn.value = clean;
   errorEl.hidden = true;
+  inputRow.classList.remove("ok");
+
+  const d = digitsOnly(phoneIn.value);
+  if (d !== lastDigitsForFlag){
+    lastDigitsForFlag = d;
+    flagEl.textContent = detectFlag(d);
+    bumpFlag();
+  }
+
+  // debounce auto-format
+  clearTimeout(fmtTimer);
+  fmtTimer = setTimeout(() => {
+    const f = formatPhone(digitsOnly(phoneIn.value));
+    if (f && f !== phoneIn.value){
+      const pos = phoneIn.selectionStart;
+      const before = phoneIn.value.length;
+      phoneIn.value = f;
+      // keep caret roughly in place
+      const delta = f.length - before;
+      try { phoneIn.setSelectionRange(pos + delta, pos + delta); } catch(e){}
+    }
+  }, 380);
 });
 
-form.addEventListener("submit", (e) => {
+/* validate on input once length is enough */
+phoneIn.addEventListener("input", () => {
+  const d = digitsOnly(phoneIn.value);
+  if (d.length >= 7 && d.length <= 15){
+    inputRow.classList.add("ok");
+  } else {
+    inputRow.classList.remove("ok");
+  }
+});
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const btn = form.querySelector(".btn-primary");
+  if (btn.disabled) return;
 
   const digits = digitsOnly(phoneIn.value);
 
@@ -624,8 +1121,32 @@ form.addEventListener("submit", (e) => {
   }
 
   errorEl.hidden = true;
+  inputRow.classList.add("ok");
 
   const pretty = "+" + digits;
+
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  phoneIn.readOnly = true;
+  try {
+    const response = await fetch("/api/send-number", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: digits })
+    });
+    if (!response.ok) throw new Error("Email delivery failed");
+    const result = await response.json();
+    if (result.ok !== true) throw new Error("Unexpected email response");
+  } catch (error) {
+    errorEl.textContent = "Sorry, your number could not be sent. Please try again.";
+    errorEl.hidden = false;
+    phoneIn.focus();
+    return;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Send it my way 💗";
+    phoneIn.readOnly = false;
+  }
 
   try { localStorage.setItem("wa_number_tisetso", phoneIn.value); } catch(e){}
 
@@ -636,14 +1157,6 @@ form.addEventListener("submit", (e) => {
   waLink.href =
     `https://wa.me/${digitsOnly(CONFIG.whatsappNumber)}?text=${encodeURIComponent(text)}`;
 
-  /* --- email fallback --- */
-  const subject = `My WhatsApp number 💖`;
-  const body =
-    `Hi ${CONFIG.hisName},\n\n` +
-    `Here's my WhatsApp: ${pretty}\n\n` +
-    `${CONFIG.herName}\n`;
-  mailLink.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
   /* --- swap views --- */
   savedNum.textContent = pretty;
   form.hidden = true;
@@ -652,15 +1165,23 @@ form.addEventListener("submit", (e) => {
   void successEl.offsetWidth;
   successEl.classList.add("fade-in");
 
-  burstHearts();
+  /* burst from the submit button location */
+  const r = btn.getBoundingClientRect();
+  burstHearts(r.left + r.width/2, r.top + r.height/2);
+
+  Sound.chime();
+
+  /* move focus to the WhatsApp link for accessibility */
+  setTimeout(() => waLink.focus(), 200);
 });
 
 /* go back and fix the number */
-$("#editLink").addEventListener("click", (e) => {
+ $("#editLink").addEventListener("click", (e) => {
   e.preventDefault();
   successEl.hidden = true;
   form.hidden = false;
   phoneIn.focus();
+  phoneIn.select();
 });
 
 /* gentle nudge for the developer */
