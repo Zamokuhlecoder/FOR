@@ -19,8 +19,12 @@ function using Gmail SMTP. The visitor can also choose to open WhatsApp.
    app password or put it in `index.html`. The Git-ignored `.env.local` file
    is for local settings and is not automatically uploaded when you deploy
    from Git; add the values in Vercel's project settings.
-5. In `index.html`, update `CONFIG.hisName` and `CONFIG.whatsappNumber` for the
-   optional WhatsApp link, then deploy that change.
+5. In `index.html`, update `CONFIG.hisName` and set `CONFIG.whatsappNumber` to
+   your actual WhatsApp number, including the country code and digits only
+   (no leading zero, `+`, or spaces). The WhatsApp chat links stay unavailable
+   while the example number is unchanged. The visitor can open a blank chat
+   without submitting the form or after sending their number by email. Deploy
+   the configuration change.
 6. Open the deployed site, submit a test number, and check the recipient's
    inbox. The success screen appears only when Gmail accepts the email; check
    spam if it does not arrive.

@@ -3,7 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
 
-function setup(fetch) {
+function setup(fetch, whatsappNumber = "27821234567") {
   const html = fs.readFileSync("index.html", "utf8");
   const start = html.indexOf("/* ---------- form ---------- */", html.indexOf("<script>"));
   const end = html.indexOf("/* gentle nudge for the developer */", start);
@@ -18,24 +18,45 @@ function setup(fetch) {
       getBoundingClientRect() { return { left: 0, top: 0, width: 10, height: 10 }; }
     };
   }
-  const ids = ["form", "phone", "inputRow", "error", "success", "waLink", "savedNumber", "flag", "editLink"];
+  const ids = ["form", "phone", "inputRow", "error", "success", "waLink", "directWaLink", "waUnavailable", "savedNumber", "flag", "editLink"];
   const elements = Object.fromEntries(ids.map((id) => [id, element()]));
   const button = element();
   elements.form.querySelector = () => button;
   elements.success.hidden = true;
+  elements.waLink.hidden = true;
+  elements.directWaLink.hidden = true;
+  elements.waUnavailable.hidden = true;
   const saved = {};
   const context = {
     $: (selector) => elements[selector.slice(1)],
     digitsOnly: (value) => (value || "").replace(/\D/g, ""),
     localStorage: { getItem: (key) => saved[key], setItem: (key, value) => { saved[key] = value; } },
     detectFlag: () => "", bumpFlag() {}, formatPhone: (value) => value,
-    CONFIG: { hisName: "Alex", herName: "Tisetso", whatsappNumber: "27123456789" },
+    CONFIG: { hisName: "Alex", herName: "Tisetso", whatsappNumber },
     fetch, burstHearts() {}, Sound: { chime() {} }, setTimeout: (callback) => callback(),
     clearTimeout() {}, Intl, encodeURIComponent
   };
   vm.runInNewContext(html.slice(start, end), context);
   return { elements, button, saved };
 }
+
+test("WhatsApp links open a blank chat without submitting the form", () => {
+  let calls = 0;
+  const app = setup(() => { calls++; });
+  assert.equal(app.elements.directWaLink.hidden, false);
+  assert.equal(app.elements.directWaLink.href, "https://wa.me/27821234567");
+  assert.equal(app.elements.waLink.href, app.elements.directWaLink.href);
+  assert.equal(calls, 0);
+});
+
+test("placeholder or invalid WhatsApp number does not create links", () => {
+  for (const number of ["27123456789", "", "0123456"]) {
+    const app = setup(() => {}, number);
+    assert.equal(app.elements.directWaLink.hidden, true);
+    assert.equal(app.elements.waLink.hidden, true);
+    assert.equal(app.elements.waUnavailable.hidden, false);
+  }
+});
 
 test("successful submission sends digits before showing success", async () => {
   let resolveFetch;

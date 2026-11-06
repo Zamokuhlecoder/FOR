@@ -690,6 +690,8 @@
       </div>
 
       <button type="submit" class="btn-primary">Send it my way 💗</button>
+      <a class="btn-ghost" id="directWaLink" href="#" target="_blank" rel="noopener" hidden>Or chat with me on WhatsApp 💬</a>
+      <p class="hint" id="waUnavailable" hidden>WhatsApp chat is not set up yet. You can still send your number above.</p>
     </form>
 
     <!-- ================= SUCCESS ================= -->
@@ -697,9 +699,9 @@
       <p class="big">Got it, <span>Tisetso</span> 🥳</p>
       <div class="chip"><span aria-hidden="true">📱</span><span id="savedNumber">+—</span></div>
       <p class="message" style="margin:0;min-height:auto">
-        Your number was sent by email. You can also open WhatsApp with a message already written — change anything you like before sending.
+        Your number was sent by email.
       </p>
-      <a class="btn-primary" id="waLink" href="#" target="_blank" rel="noopener">Open WhatsApp &amp; say hi 💬</a>
+      <a class="btn-primary" id="waLink" href="#" target="_blank" rel="noopener" hidden>Open WhatsApp &amp; say hi 💬</a>
       <a class="small-link" href="#" id="editLink">← change my number</a>
     </div>
 
@@ -719,7 +721,7 @@
 const CONFIG = {
   herName: "Tisetso",              // her name (already set 💖)
   hisName: "Alex",                 // 👈 YOUR first name
-  whatsappNumber: "27123456789"    // 👈 YOUR number: country code + number, DIGITS ONLY
+  whatsappNumber: "27720390830"    // 👈 YOUR number: country code + number, DIGITS ONLY
 };
 /* ============================================================ */
 
@@ -1039,8 +1041,21 @@ const inputRow  = $("#inputRow");
 const errorEl   = $("#error");
 const successEl = $("#success");
 const waLink    = $("#waLink");
+const directWaLink = $("#directWaLink");
+const waUnavailable = $("#waUnavailable");
 const savedNum  = $("#savedNumber");
 const flagEl    = $("#flag");
+
+const whatsappNumber = digitsOnly(CONFIG.whatsappNumber);
+if (/^[1-9]\d{6,14}$/.test(whatsappNumber) && whatsappNumber !== "27123456789"){
+  const whatsappUrl = `https://wa.me/${whatsappNumber}`;
+  directWaLink.href = whatsappUrl;
+  waLink.href = whatsappUrl;
+  directWaLink.hidden = false;
+  waLink.hidden = false;
+} else {
+  waUnavailable.hidden = false;
+}
 
 /* restore a previously typed number (nice on refresh) */
 try {
@@ -1150,13 +1165,6 @@ form.addEventListener("submit", async (e) => {
 
   try { localStorage.setItem("wa_number_tisetso", phoneIn.value); } catch(e){}
 
-  /* --- WhatsApp deep link to YOU --- */
-  const text =
-    `Hi ${CONFIG.hisName}! It's ${CONFIG.herName} 😊 ` +
-    `We worked together that one day — here's my WhatsApp so we can keep talking: ${pretty}`;
-  waLink.href =
-    `https://wa.me/${digitsOnly(CONFIG.whatsappNumber)}?text=${encodeURIComponent(text)}`;
-
   /* --- swap views --- */
   savedNum.textContent = pretty;
   form.hidden = true;
@@ -1171,8 +1179,8 @@ form.addEventListener("submit", async (e) => {
 
   Sound.chime();
 
-  /* move focus to the WhatsApp link for accessibility */
-  setTimeout(() => waLink.focus(), 200);
+  /* move focus to the next available action */
+  setTimeout(() => (waLink.hidden ? $("#editLink") : waLink).focus(), 200);
 });
 
 /* go back and fix the number */
