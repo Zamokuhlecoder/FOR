@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>For Tisetso 💖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     BRIGHT LOVE PALETTE
+     ============================================================ */
+  :root{
+    --hot:#ff2d78;
+    --rose:#ff7eb3;
+    --coral:#ff6b6b;
+    --tangerine:#ff9f1c;
+    --sun:#ffd166;
+    --magenta:#d61fd6;
+    --plum:#7b2d8e;
+
+    --ink:#42203a;
+    --ink-soft:#8a5f7d;
+    --line:#ffd9e8;
+
+    --glow: 0 24px 60px -18px rgba(255,45,120,.55);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{ min-height:100%; }
+
+  body{
+    margin:0;
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    padding:30px 18px 40px;
+    font-family:'Quicksand', system-ui, -apple-system, sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+    position:relative;
+    background:#fff4fa;
+  }
+
+  /* ---------- bright animated backdrop ---------- */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:-20%;
+    z-index:-3;
+    background:
+      radial-gradient(46% 42% at 14% 12%, #ffd1e6 0%, transparent 62%),
+      radial-gradient(44% 40% at 86% 8%,  #ffe6b8 0%, transparent 60%),
+      radial-gradient(52% 48% at 78% 92%, #ffc9dd 0%, transparent 62%),
+      radial-gradient(48% 44% at 20% 88%, #f0d4ff 0%, transparent 60%),
+      linear-gradient(150deg, #fff5fa 0%, #fff0f6 40%, #fff6ec 70%, #fdf1ff 100%);
+    animation:drift 22s ease-in-out infinite alternate;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:-30%;
+    z-index:-2;
+    background:
+      radial-gradient(30% 26% at 50% 50%, rgba(255,45,120,.20), transparent 70%),
+      radial-gradient(24% 22% at 70% 30%, rgba(255,159,28,.18), transparent 70%),
+      radial-gradient(26% 24% at 30% 70%, rgba(214,31,214,.14), transparent 70%);
+    filter:blur(30px);
+    animation:swirl 28s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes drift{
+    from{ transform:translate3d(0,0,0) scale(1); }
+    to  { transform:translate3d(0,-3%,0) scale(1.06); }
+  }
+  @keyframes swirl{
+    from{ transform:rotate(0deg) scale(1); }
+    to  { transform:rotate(360deg) scale(1.05); }
+  }
+
+  /* ---------- floating hearts layer ---------- */
+  #hearts{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .heart{
+    position:absolute;
+    bottom:-70px;
+    animation-name:floatUp;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+    will-change:transform,opacity;
+    user-select:none;
+  }
+  @keyframes floatUp{
+    0%   { transform:translate3d(0,0,0) rotate(0deg) scale(.9);   opacity:0; }
+    10%  { opacity:.9; }
+    88%  { opacity:.45; }
+    100% { transform:translate3d(30px,-118vh,0) rotate(32deg) scale(1.1); opacity:0; }
+  }
+
+  /* ---------- card ---------- */
+  @property --angle{
+    syntax:'<angle>';
+    initial-value:0deg;
+    inherits:false;
+  }
+
+  .card{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:560px;
+    padding:42px 32px 30px;
+    border-radius:34px;
+    border:3px solid transparent;
+    background:
+      linear-gradient(rgba(255,255,255,.92), rgba(255,255,255,.88)) padding-box,
+      conic-gradient(from var(--angle),
+        #ff2d78, #ff9f1c, #ffd166, #ff7eb3, #d61fd6, #ff6b6b, #ff2d78) border-box;
+    box-shadow:
+      0 40px 90px -30px rgba(214,31,214,.45),
+      0 24px 60px -26px rgba(255,45,120,.55),
+      0 0 0 1px rgba(255,255,255,.7) inset;
+    backdrop-filter:blur(18px) saturate(150%);
+    -webkit-backdrop-filter:blur(18px) saturate(150%);
+    animation:cardIn 1s cubic-bezier(.18,.85,.28,1) both, spin 7s linear infinite;
+  }
+  @keyframes spin{ to{ --angle:360deg; } }
+  @keyframes cardIn{
+    from{ opacity:0; transform:translateY(34px) scale(.95); }
+    to  { opacity:1; transform:none; }
+  }
+
+  /* ---------- little badge ---------- */
+  .badge{
+    display:block;
+    width:max-content;
+    margin:0 auto 16px;
+    padding:7px 16px;
+    border-radius:999px;
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(100deg,var(--hot),var(--tangerine),var(--magenta));
+    background-size:200% 100%;
+    box-shadow:0 10px 22px -10px rgba(255,45,120,.9);
+    animation:shimmer 5s linear infinite;
+  }
+  @keyframes shimmer{
+    0%{ background-position:0% 0; }
+    100%{ background-position:200% 0; }
+  }
+
+  .envelope{
+    display:block;
+    text-align:center;
+    font-size:52px;
+    line-height:1;
+    margin-bottom:8px;
+    animation:bob 3.6s ease-in-out infinite;
+    filter:drop-shadow(0 12px 20px rgba(255,45,120,.4));
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0) rotate(-4deg) scale(1); }
+    50%    { transform:translateY(-10px) rotate(4deg) scale(1.05); }
+  }
+
+  h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:clamp(30px, 7.4vw, 42px);
+    line-height:1.15;
+    text-align:center;
+    margin:6px 0 20px;
+    letter-spacing:-.6px;
+    color:var(--ink);
+  }
+  h1 .name{
+    display:inline-block;
+    font-style:italic;
+    background:linear-gradient(100deg,var(--hot) 0%,var(--tangerine) 42%,var(--magenta) 78%,var(--hot) 100%);
+    background-size:220% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:shimmer 6s linear infinite;
+  }
+
+  /* ---------- message ---------- */
+  .message{
+    font-size:15.5px;
+    line-height:1.8;
+    color:var(--ink-soft);
+    text-align:center;
+    margin:0 0 24px;
+  }
+  .message p{ margin:0 0 13px; }
+  .message p:last-child{ margin-bottom:0; }
+  .message strong{ color:var(--ink); font-weight:700; }
+  .message .hl{
+    color:var(--hot);
+    font-weight:700;
+    background:linear-gradient(180deg,transparent 62%, rgba(255,209,102,.65) 62%);
+    padding:0 2px;
+    border-radius:3px;
+  }
+
+  /* ---------- form ---------- */
+  .form{ display:grid; gap:16px; }
+  .field{ display:grid; gap:8px; }
+
+  label{
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:1.3px;
+    text-transform:uppercase;
+    color:#b57aa2;
+    padding-left:6px;
+  }
+
+  .input-row{
+    display:flex;
+    align-items:center;
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:20px;
+    padding:0 8px 0 18px;
+    transition:border-color .25s, box-shadow .3s, transform .25s;
+  }
+  .input-row:focus-within{
+    border-color:var(--rose);
+    box-shadow:0 0 0 5px rgba(255,126,179,.22), 0 14px 30px -18px rgba(255,45,120,.8);
+    transform:translateY(-2px);
+  }
+  .input-row.shake{ animation:shake .42s cubic-bezier(.36,.07,.19,.97); }
+  @keyframes shake{
+    10%,90%{ transform:translateX(-2px); }
+    20%,80%{ transform:translateX(4px); }
+    30%,50%,70%{ transform:translateX(-7px); }
+    40%,60%{ transform:translateX(7px); }
+  }
+
+  .prefix{
+    font-weight:700;
+    font-size:19px;
+    color:var(--hot);
+    margin-right:8px;
+    user-select:none;
+  }
+
+  input{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    padding:17px 14px 17px 0;
+    font-family:inherit;
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    letter-spacing:.6px;
+  }
+  input::placeholder{ color:#d3b7cb; font-weight:500; letter-spacing:.2px; }
+
+  .hint{
+    font-size:12.5px;
+    color:#b389a9;
+    padding-left:8px;
+    margin:0;
+    line-height:1.5;
+  }
+  .hint strong{ color:var(--hot); }
+
+  .error{
+    font-size:13px;
+    font-weight:700;
+    color:#e0245e;
+    margin:0;
+    padding-left:8px;
+  }
+
+  button{
+    font-family:inherit;
+    border:0;
+    cursor:pointer;
+    border-radius:20px;
+    transition:transform .2s, box-shadow .28s, background-position .5s, filter .25s;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .btn-primary{
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    padding:19px 24px;
+    font-size:16.5px;
+    font-weight:700;
+    letter-spacing:.3px;
+    color:#fff;
+    background:linear-gradient(100deg,#ff2d78 0%,#ff6b6b 30%,#ff9f1c 55%,#d61fd6 100%);
+    background-size:220% 100%;
+    box-shadow:0 18px 36px -14px rgba(255,45,120,.85), 0 8px 20px -12px rgba(214,31,214,.7);
+  }
+  .btn-primary:hover{
+    transform:translateY(-3px);
+    background-position:100% 0;
+    box-shadow:0 24px 44px -14px rgba(214,31,214,.75), 0 12px 24px -12px rgba(255,45,120,.9);
+  }
+  .btn-primary:active{ transform:translateY(0) scale(.985); }
+  .btn-primary::after{
+    content:"";
+    position:absolute;
+    top:0; left:-60%;
+    width:45%; height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+    transform:skewX(-20deg);
+    animation:sweep 4.5s ease-in-out infinite;
+  }
+  @keyframes sweep{
+    0%,60%{ left:-60%; }
+    85%,100%{ left:130%; }
+  }
+
+  .footnote{
+    margin:22px 0 0;
+    text-align:center;
+    font-size:12.5px;
+    line-height:1.7;
+    color:#bd9cb4;
+  }
+  .footnote .ps{
+    display:block;
+    margin-top:8px;
+    font-style:italic;
+    color:var(--hot);
+    font-weight:600;
+  }
+
+  /* ---------- success view ---------- */
+  .success{ display:grid; gap:16px; text-align:center; }
+
+  .success .big{
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:clamp(23px, 5.6vw, 29px);
+    margin:0;
+    color:var(--ink);
+  }
+  .success .big span{
+    background:linear-gradient(100deg,var(--hot),var(--tangerine),var(--magenta));
+    background-size:200% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:shimmer 6s linear infinite;
+  }
+
+  .chip{
+    justify-self:center;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 24px;
+    border-radius:999px;
+    background:linear-gradient(120deg,#fff0f6,#fff7e6);
+    border:2px dashed #ffb3d1;
+    font-weight:700;
+    font-size:17px;
+    letter-spacing:1px;
+    color:var(--ink);
+    box-shadow:0 12px 26px -18px rgba(255,45,120,.9);
+  }
+
+  .btn-ghost{
+    width:100%;
+    padding:15px 22px;
+    font-size:14.5px;
+    font-weight:700;
+    color:#a2658c;
+    background:rgba(255,255,255,.9);
+    border:2px solid var(--line);
+    display:block;
+    text-align:center;
+    text-decoration:none;
+  }
+  .btn-ghost:hover{ background:#fff; border-color:var(--rose); color:var(--hot); transform:translateY(-2px); }
+
+  a.btn-primary{ display:block; text-align:center; text-decoration:none; }
+
+  .small-link{
+    font-size:13px;
+    font-weight:600;
+    color:#b389a9;
+    text-decoration:underline;
+    text-underline-offset:4px;
+  }
+  .small-link:hover{ color:var(--hot); }
+
+  [hidden]{ display:none !important; }
+
+  .fade-in{ animation:fadeIn .55s cubic-bezier(.2,.8,.3,1) both; }
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(14px); }
+    to  { opacity:1; transform:none; }
+  }
+
+  /* ---------- confetti ---------- */
+  #confetti{ position:fixed; inset:0; pointer-events:none; z-index:60; }
+  .confetti-piece{
+    position:fixed;
+    left:50%; top:46%;
+    font-size:22px;
+    animation:burst 1.15s cubic-bezier(.15,.7,.3,1) forwards;
+  }
+  @keyframes burst{
+    0%  { transform:translate(-50%,-50%) scale(.3) rotate(0deg); opacity:1; }
+    70% { opacity:.95; }
+    100%{ transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.15) rotate(var(--rot)); opacity:0; }
+  }
+
+  /* ---------- sparkle trail ---------- */
+  .spark{
+    position:fixed;
+    width:8px; height:8px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:55;
+    background:radial-gradient(circle,#fff 0%,#ffd166 45%,rgba(255,45,120,0) 72%);
+    animation:sparkle .85s ease-out forwards;
+  }
+  @keyframes sparkle{
+    from{ transform:scale(1); opacity:.95; }
+    to  { transform:scale(.1) translateY(-16px); opacity:0; }
+  }
+
+  @media (max-width:440px){
+    .card{ padding:32px 20px 26px; border-radius:26px; }
+    .message{ font-size:15px; }
+    .envelope{ font-size:44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;
+    }
+    #hearts,#confetti{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts" aria-hidden="true"></div>
+<div id="confetti" aria-hidden="true"></div>
+
+<main class="card">
+  <span class="badge">one day · one great conversation</span>
+  <span class="envelope" aria-hidden="true">💌</span>
+
+  <h1>Hey <span class="name">Tisetso</span> 💖</h1>
+
+  <div class="message">
+    <p>I know we only got to work together for <span class="hl">one single day</span> — but honestly, that one day was the best part of my week. 😊</p>
+    <p>You gave me your <strong>email</strong>, and I promise I'll use it. But WhatsApp just feels more like us — quick, easy, and full of voice notes.</p>
+    <p>If you'd like to keep talking, drop your number below. <strong>No pressure at all</strong> — and if you'd rather not, we're still completely good. 💛</p>
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <form class="form" id="form" novalidate>
+    <div class="field">
+      <label for="phone">Your WhatsApp number</label>
+      <div class="input-row" id="inputRow">
+        <span class="prefix" aria-hidden="true">+</span>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputmode="tel"
+          placeholder="27 82 123 4567"
+          autocomplete="tel"
+          aria-describedby="hint error" />
+      </div>
+      <p class="hint" id="hint">Include your country code — e.g. <strong>27&nbsp;82&nbsp;123&nbsp;4567</strong></p>
+      <p class="error" id="error" role="alert" hidden></p>
+    </div>
+
+    <button type="submit" class="btn-primary">Send it my way 💗</button>
+  </form>
+
+  <!-- ================= SUCCESS ================= -->
+  <div class="success" id="success" hidden>
+    <p class="big">Got it, <span>Tisetso</span> 🥳</p>
+    <div class="chip"><span aria-hidden="true">📱</span><span id="savedNumber">+—</span></div>
+    <p class="message" style="margin:0">
+      One last tap and it lands in my pocket. This opens WhatsApp with a message already written — change anything you like before sending.
+    </p>
+    <a class="btn-primary" id="waLink" href="#" target="_blank" rel="noopener">Open WhatsApp &amp; say hi 💬</a>
+    <a class="btn-ghost" id="mailLink" href="#">or send it by email instead</a>
+    <a class="small-link" href="#" id="editLink">← change my number</a>
+  </div>
+
+  <p class="footnote">
+    Made by hand, just for you. Nothing here is stored or shared with anyone else.
+    <span class="ps">P.S. Fair warning — I send way too many memes. 😄</span>
+  </p>
+</main>
+
+<script>
+/* ============================================================
+   ⚙️  EDIT THIS — your details
+   ============================================================ */
+const CONFIG = {
+  herName: "Tisetso",              // her name (already set 💖)
+  hisName: "Alex",                 // 👈 YOUR first name
+  whatsappNumber: "27123456789",   // 👈 YOUR number: country code + number, DIGITS ONLY
+  email: "you@example.com"         // 👈 YOUR email (fallback option)
+};
+/* ============================================================ */
+
+const $ = (s) => document.querySelector(s);
+const digitsOnly = (v) => (v || "").replace(/\D/g, "");
+
+/* ---------- floating hearts ---------- */
+(function buildHearts(){
+  const wrap = $("#hearts");
+  const glyphs = ["💖","💕","💗","💛","🌸","✨","💞","⭐","🤍","💘"];
+  const count = window.innerWidth < 640 ? 16 : 28;
+
+  for (let i = 0; i < count; i++){
+    const h = document.createElement("span");
+    h.className = "heart";
+    h.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = 13 + Math.random() * 24 + "px";
+    h.style.animationDuration = 12 + Math.random() * 16 + "s";
+    h.style.animationDelay = -Math.random() * 24 + "s";
+    h.style.opacity = .5 + Math.random() * .5;
+    wrap.appendChild(h);
+  }
+})();
+
+/* ---------- sparkle trail (desktop only) ---------- */
+(function sparkles(){
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  let last = 0;
+  window.addEventListener("pointermove", (e) => {
+    const now = Date.now();
+    if (now - last < 70) return;
+    last = now;
+
+    const s = document.createElement("span");
+    s.className = "spark";
+    s.style.left = (e.clientX - 4) + "px";
+    s.style.top  = (e.clientY - 4) + "px";
+    s.style.opacity = .8;
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }, { passive: true });
+})();
+
+/* ---------- confetti burst ---------- */
+function burstHearts(){
+  const wrap = $("#confetti");
+  const glyphs = ["💖","💕","✨","💛","🌸","💗","⭐","🎉","💞"];
+  const n = 42;
+
+  for (let i = 0; i < n; i++){
+    const el = document.createElement("span");
+    el.className = "confetti-piece";
+    el.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+
+    const angle = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+    const dist  = 140 + Math.random() * 260;
+
+    el.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+    el.style.setProperty("--dy", Math.sin(angle) * dist + "px");
+    el.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+    el.style.fontSize = 16 + Math.random() * 20 + "px";
+    el.style.animationDelay = Math.random() * 0.12 + "s";
+
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  }
+}
+
+/* ---------- form ---------- */
+const form      = $("#form");
+const phoneIn   = $("#phone");
+const inputRow  = $("#inputRow");
+const errorEl   = $("#error");
+const successEl = $("#success");
+const waLink    = $("#waLink");
+const mailLink  = $("#mailLink");
+const savedNum  = $("#savedNumber");
+
+/* restore a previously typed number (nice on refresh) */
+try {
+  const saved = localStorage.getItem("wa_number_tisetso");
+  if (saved) phoneIn.value = saved;
+} catch(e){}
+
+/* live-clean the input as she types */
+phoneIn.addEventListener("input", () => {
+  const clean = phoneIn.value.replace(/[^\d\s\-()]/g, "");
+  if (clean !== phoneIn.value) phoneIn.value = clean;
+  errorEl.hidden = true;
+});
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const digits = digitsOnly(phoneIn.value);
+
+  if (digits.length < 7 || digits.length > 15){
+    errorEl.textContent = "Hmm, that doesn't look complete — add your country code too 🙂";
+    errorEl.hidden = false;
+    inputRow.classList.remove("shake");
+    void inputRow.offsetWidth;
+    inputRow.classList.add("shake");
+    phoneIn.focus();
+    return;
+  }
+
+  errorEl.hidden = true;
+
+  const pretty = "+" + digits;
+
+  try { localStorage.setItem("wa_number_tisetso", phoneIn.value); } catch(e){}
+
+  /* --- WhatsApp deep link to YOU --- */
+  const text =
+    `Hi ${CONFIG.hisName}! It's ${CONFIG.herName} 😊 ` +
+    `We worked together that one day — here's my WhatsApp so we can keep talking: ${pretty}`;
+  waLink.href =
+    `https://wa.me/${digitsOnly(CONFIG.whatsappNumber)}?text=${encodeURIComponent(text)}`;
+
+  /* --- email fallback --- */
+  const subject = `My WhatsApp number 💖`;
+  const body =
+    `Hi ${CONFIG.hisName},\n\n` +
+    `Here's my WhatsApp: ${pretty}\n\n` +
+    `${CONFIG.herName}\n`;
+  mailLink.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  /* --- swap views --- */
+  savedNum.textContent = pretty;
+  form.hidden = true;
+  successEl.hidden = false;
+  successEl.classList.remove("fade-in");
+  void successEl.offsetWidth;
+  successEl.classList.add("fade-in");
+
+  burstHearts();
+});
+
+/* go back and fix the number */
+$("#editLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  successEl.hidden = true;
+  form.hidden = false;
+  phoneIn.focus();
+});
+
+/* gentle nudge for the developer */
+if (digitsOnly(CONFIG.whatsappNumber) === "27123456789"){
+  console.warn("⚠️ Don't forget to set CONFIG.whatsappNumber to your real number!");
+}
+</script>
+</body>
+</html>
